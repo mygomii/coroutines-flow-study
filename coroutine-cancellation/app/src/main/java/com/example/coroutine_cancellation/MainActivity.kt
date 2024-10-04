@@ -1,10 +1,9 @@
-package com.example.coroutine_contexts
+package com.example.coroutine_cancellation
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
@@ -12,24 +11,19 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import com.example.coroutine_contexts.homework.Main
-import com.example.coroutine_contexts.ui.theme.CoroutinecontextsTheme
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
+import com.example.coroutine_cancellation.ui.theme.CoroutinecancellationTheme
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            CoroutinecontextsTheme {
+            CoroutinecancellationTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Box(
+                    Greeting(
+                        name = "Android",
                         modifier = Modifier.padding(innerPadding)
-                    ) {
-                        Main()
-                    }
-
+                    )
                 }
             }
         }
@@ -47,22 +41,7 @@ fun Greeting(name: String, modifier: Modifier = Modifier) {
 @Preview(showBackground = true)
 @Composable
 fun GreetingPreview() {
-    CoroutinecontextsTheme {
+    CoroutinecancellationTheme {
         Greeting("Android")
     }
-}
-
-
-suspend fun birdSounds(name: String, sound: String) {
-    println("$name says $sound")
-}
-
-fun main() = runBlocking {
-    val tweety = launch { birdSounds("Tweety", "Chirp") }
-    val zazu = launch { birdSounds("Zazu", "Squawk") }
-    val woodstock = launch { birdSounds("Woodstock", "Tweet tweet") }
-
-    tweety.join()
-    zazu.join()
-    woodstock.join()
 }
