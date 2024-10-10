@@ -1,5 +1,6 @@
 package com.example.coroutine_error_handling.util
 
+import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -13,6 +14,7 @@ object EmailService {
     }
 
     suspend fun sendNewsletter() {
+        // TODO;
         coroutineScope {
             mailingList.forEach { emailAddress ->
                 launch {
@@ -21,11 +23,42 @@ object EmailService {
                     } catch (e: Exception) {  // TODO; Coroutine Error Handling - homework2
                         println("#### ${e.message}")
                     }
-
                 }
             }
         }
+
+        coroutineScope {
+            val deferredList = mailingList.map { emailAddress ->
+                async {
+                    sendEmail(emailAddress)
+                    emailAddress
+                }
+            }
+
+            deferredList.forEach { deferred ->
+                try {
+                    val address = deferred.await()
+                    println("### success : $address")
+                } catch (e: Exception) {
+                    println("### failure : ${e.message}")
+                }
+            }
+        }
+
+        // TODO; 잘못된 코드
+//        coroutineScope {
+//            mailingList.forEach { emailAddress ->
+//                async {
+//                    try {
+//                        sendEmail(emailAddress)
+//                    } catch (e: Exception) {
+//                        println("#### ${e.message}")
+//                    }
+//                }
+//            }
+//        }
     }
+
 
     private suspend fun sendEmail(address: String) {
         println("Sending email to $address")
