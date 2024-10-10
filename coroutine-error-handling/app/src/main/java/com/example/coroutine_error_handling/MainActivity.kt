@@ -8,6 +8,7 @@ import androidx.lifecycle.lifecycleScope
 import com.example.coroutine_error_handling.ui.theme.CoroutineerrorhandlingTheme
 import com.example.coroutine_error_handling.util.EmailService
 import kotlinx.coroutines.CoroutineExceptionHandler
+import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
 class MainActivity : ComponentActivity() {
@@ -18,6 +19,7 @@ class MainActivity : ComponentActivity() {
         val handler = CoroutineExceptionHandler { coroutineContext, throwable ->
             throwable.printStackTrace()
         }
+
 
         lifecycleScope.launch(handler) {
             EmailService.addToMailingList(
