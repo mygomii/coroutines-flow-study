@@ -13,6 +13,9 @@ import androidx.activity.enableEdgeToEdge
 import androidx.annotation.RequiresApi
 import androidx.core.app.ActivityCompat
 import androidx.core.content.getSystemService
+import com.mygomii.coroutine_synchronization.homework.Leaderboard
+import com.mygomii.coroutine_synchronization.homework.LeaderboardListener
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
@@ -22,8 +25,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
 
-
-        // USE THIS TO RUN YOUR Leaderboard CLASS
+//        // USE THIS TO RUN YOUR Leaderboard CLASS
 //        val leaderboard = Leaderboard()
 //
 //
@@ -41,37 +43,23 @@ class MainActivity : ComponentActivity() {
 //                }
 //            }.joinAll()
 //            println("Completed!")
-//        }
-    }
+////        }
 
-    @RequiresApi(Build.VERSION_CODES.R)
-    suspend fun Context.getLocation(): Location {
-        return suspendCancellableCoroutine { continuation ->
-            val locationManager = getSystemService<LocationManager>()!!
+        // TODO;
+        val leaderboard = Leaderboard()
 
-            val hasFineLocationPermission = ActivityCompat.checkSelfPermission(
-                this@getLocation,
-                Manifest.permission.ACCESS_FINE_LOCATION
-            ) == PackageManager.PERMISSION_GRANTED
-            val hasCoarseLocationPermission = ActivityCompat.checkSelfPermission(
-                this@getLocation,
-                Manifest.permission.ACCESS_COARSE_LOCATION
-            ) == PackageManager.PERMISSION_GRANTED
-
-            val signal = CancellationSignal()
-            if (hasFineLocationPermission && hasCoarseLocationPermission) {
-                locationManager.getCurrentLocation(LocationManager.NETWORK_PROVIDER, signal, mainExecutor) { location ->
-                    println("Got location: $location")
-                    continuation.resume(location)
-                }
-            } else {
-                continuation.resumeWithException(RuntimeException("Missing location permission"))
-            }
-
-            continuation.invokeOnCancellation {
-                signal.cancel()
-            }
+        val listener = LeaderboardListener { updatedLeaderboard ->
+            println("### $updatedLeaderboard")
         }
+
+        leaderboard.registerListener(listener)
+
+        leaderboard.addScore("Alice", 150)
+        leaderboard.addScore("mygomii", 400)
+        leaderboard.addScore("mijeong", 580)
+        leaderboard.addScore("Alice", 220)
+
+        leaderboard.unregisterListener(listener)
     }
 }
 

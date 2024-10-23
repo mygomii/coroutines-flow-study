@@ -15,17 +15,17 @@ object EmailService {
 
     suspend fun sendNewsletter() {
         // TODO;
-        coroutineScope {
-            mailingList.forEach { emailAddress ->
-                launch {
-                    try {
-                        sendEmail(emailAddress)
-                    } catch (e: Exception) {  // TODO; Coroutine Error Handling - homework2
-                        println("#### ${e.message}")
-                    }
-                }
-            }
-        }
+//        coroutineScope {
+//            mailingList.forEach { emailAddress ->
+//                launch {
+//                    try {
+//                        sendEmail(emailAddress)
+//                    } catch (e: Exception) {  // TODO; Coroutine Error Handling - homework2
+//                        println("#### ${e.message}")
+//                    }
+//                }
+//            }
+//        }
 
         coroutineScope {
             val deferredList = mailingList.map { emailAddress ->
@@ -38,14 +38,14 @@ object EmailService {
             deferredList.forEach { deferred ->
                 try {
                     val address = deferred.await()
-                    println("### success : $address")
+                    println("### success : ${deferred.await()}")
                 } catch (e: Exception) {
                     println("### failure : ${e.message}")
                 }
             }
         }
 
-        // TODO; 잘못된 코드
+        // TODO; 저번에 이렇게 했었음
 //        coroutineScope {
 //            mailingList.forEach { emailAddress ->
 //                async {
